@@ -23,6 +23,10 @@ class AuthorResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
+    protected static ?string $modelLabel = 'Autor';
+
+    protected static ?string $pluralModelLabel = 'Autores';
+
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
