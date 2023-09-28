@@ -42,11 +42,6 @@ class LatestOrders extends BaseWidget
                         'warning' => 'processing',
                         'success' => fn ($state) => in_array($state, ['delivered', 'shipped']),
                     ]),
-                Tables\Columns\TextColumn::make('currency')
-                    ->getStateUsing(fn ($record): ?string => Currency::find($record->currency)?->name ?? null)
-                    ->label('Moeda')
-                    ->searchable()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('total_price')
                     ->label('Valor Total')
                     ->searchable()

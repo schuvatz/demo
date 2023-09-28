@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
-use Squire\Models\Currency;
 
 class OrderResource extends Resource
 {
@@ -89,12 +88,6 @@ class OrderResource extends Resource
                         'warning' => 'processing',
                         'success' => fn ($state) => in_array($state, ['delivered', 'shipped']),
                     ]),
-                Tables\Columns\TextColumn::make('currency')
-                    ->getStateUsing(fn ($record): ?string => Currency::find($record->currency)?->name ?? null)
-                    ->label('Moeda')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
                 Tables\Columns\TextColumn::make('total_price')
                     ->label('Preço Total')
                     ->searchable()
@@ -324,13 +317,6 @@ class OrderResource extends Resource
                 ])
                 ->required()
                 ->native(false),
-
-            Forms\Components\Select::make('currency')
-                ->label('Moeda')
-                ->searchable()
-                ->getSearchResultsUsing(fn (string $query) => Currency::where('name', 'like', "%{$query}%")->pluck('name', 'id'))
-                ->getOptionLabelUsing(fn ($value): ?string => Currency::find($value)?->getAttribute('name'))
-                ->required(),
 
             AddressForm::make('address')
                 ->columnSpan('full'),
