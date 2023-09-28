@@ -40,19 +40,22 @@ class CustomerResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Nome')
                             ->maxValue(50)
                             ->required(),
 
                         Forms\Components\TextInput::make('email')
-                            ->label('Email address')
+                            ->label('Email')
                             ->required()
                             ->email()
                             ->unique(ignoreRecord: true),
 
                         Forms\Components\TextInput::make('phone')
+                            ->label('Telefone')
                             ->maxValue(50),
 
                         Forms\Components\DatePicker::make('birthday')
+                            ->label('Data de Nascimento')
                             ->maxDate('today'),
                     ])
                     ->columns(2)
@@ -61,11 +64,11 @@ class CustomerResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\Placeholder::make('created_at')
-                            ->label('Created at')
+                            ->label('Criado')
                             ->content(fn (Customer $record): ?string => $record->created_at?->diffForHumans()),
 
                         Forms\Components\Placeholder::make('updated_at')
-                            ->label('Last modified at')
+                            ->label('Modificado')
                             ->content(fn (Customer $record): ?string => $record->updated_at?->diffForHumans()),
                     ])
                     ->columnSpan(['lg' => 1])
@@ -79,16 +82,19 @@ class CustomerResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nome')
                     ->searchable(isIndividual: true)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->label('Email address')
+                    ->label('Email')
                     ->searchable(isIndividual: true, isGlobal: false)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('country')
+                    ->label('País')
                     ->getStateUsing(fn ($record): ?string => Country::find($record->addresses->first()?->country)?->name ?? null),
                 Tables\Columns\TextColumn::make('phone')
                     ->searchable()
+                    ->label('Telefone')
                     ->sortable(),
             ])
             ->filters([

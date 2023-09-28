@@ -13,6 +13,10 @@ class AddressesRelationManager extends RelationManager
 {
     protected static string $relationship = 'addresses';
 
+    protected static ?string $modelLabel = 'Endereço';
+
+    protected static ?string $pluralModelLabel = 'Endereços';
+
     protected static ?string $recordTitleAttribute = 'full_address';
 
     public function form(Form $form): Form

@@ -18,6 +18,10 @@ class PaymentsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'reference';
 
+    protected static ?string $modelLabel = 'Pagamento';
+
+    protected static ?string $pluralModelLabel = 'Pagamentos';
+
     public function form(Form $form): Form
     {
         return $form
