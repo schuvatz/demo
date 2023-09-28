@@ -233,12 +233,13 @@ class ProductResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('brand')
                     ->relationship('brand', 'name')
+                    ->label('Marca')
                     ->preload()
                     ->multiple()
                     ->searchable(),
 
                 Tables\Filters\TernaryFilter::make('is_visible')
-                    ->label('Visibility')
+                    ->label('Visibilidade')
                     ->boolean()
                     ->trueLabel('Only visible')
                     ->falseLabel('Only hidden')

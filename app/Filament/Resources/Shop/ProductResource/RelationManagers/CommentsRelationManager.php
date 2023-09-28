@@ -18,26 +18,32 @@ class CommentsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    protected static ?string $modelLabel = 'comentário';
+
+    protected static ?string $pluralModelLabel = 'Comentários';
+
     public function form(Form $form): Form
     {
         return $form
             ->columns(1)
             ->schema([
                 Forms\Components\TextInput::make('title')
+                    ->label('Título')
                     ->required(),
 
                 Forms\Components\Select::make('customer_id')
                     ->relationship('customer', 'name')
+                    ->label('Cliente')
                     ->searchable()
                     ->required(),
 
                 Forms\Components\Toggle::make('is_visible')
-                    ->label('Approved for public')
+                    ->label('Aprovado para o público?')
                     ->default(true),
 
                 Forms\Components\MarkdownEditor::make('content')
                     ->required()
-                    ->label('Content'),
+                    ->label('Conteúdo'),
             ]);
     }
 
@@ -61,17 +67,17 @@ class CommentsRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label('Title')
+                    ->label('Título')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('customer.name')
-                    ->label('Customer')
+                    ->label('Cliente')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_visible')
-                    ->label('Visibility')
+                    ->label('Visibilidade')
                     ->boolean()
                     ->sortable(),
             ])
