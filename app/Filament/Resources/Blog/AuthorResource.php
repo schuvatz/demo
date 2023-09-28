@@ -34,10 +34,11 @@ class AuthorResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nome')
                     ->required(),
 
                 Forms\Components\TextInput::make('email')
-                    ->label('Email address')
+                    ->label('Email')
                     ->required()
                     ->email()
                     ->unique(Author::class, 'email', ignoreRecord: true),
@@ -60,13 +61,14 @@ class AuthorResource extends Resource
                 Tables\Columns\Layout\Split::make([
                     Tables\Columns\Layout\Stack::make([
                         Tables\Columns\TextColumn::make('name')
+                            ->label('Nome')
                             ->searchable()
                             ->sortable()
                             ->weight('medium')
                             ->alignLeft(),
 
                         Tables\Columns\TextColumn::make('email')
-                            ->label('Email address')
+                            ->label('Email')
                             ->searchable()
                             ->sortable()
                             ->color('gray')
