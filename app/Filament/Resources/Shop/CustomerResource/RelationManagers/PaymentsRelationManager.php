@@ -22,6 +22,8 @@ class PaymentsRelationManager extends RelationManager
 
     protected static ?string $pluralModelLabel = 'Pagamentos';
 
+    protected static ?string $title = "Pagamentos";
+
     public function form(Form $form): Form
     {
         return $form

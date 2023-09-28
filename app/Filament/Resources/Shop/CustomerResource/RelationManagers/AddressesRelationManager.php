@@ -19,6 +19,8 @@ class AddressesRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'full_address';
 
+    protected static ?string $title = "Endereços";
+
     public function form(Form $form): Form
     {
         return $form

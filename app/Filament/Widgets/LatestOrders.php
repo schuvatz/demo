@@ -15,6 +15,8 @@ class LatestOrders extends BaseWidget
 
     protected static ?int $sort = 2;
 
+    protected static ?string $heading = 'Últimos Pedidos';
+
     public function table(Table $table): Table
     {
         return $table
@@ -23,13 +25,15 @@ class LatestOrders extends BaseWidget
             ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Order Date')
+                    ->label('Data')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('number')
+                    ->label('Número')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('customer.name')
+                    ->label('Cliente')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
@@ -40,18 +44,17 @@ class LatestOrders extends BaseWidget
                     ]),
                 Tables\Columns\TextColumn::make('currency')
                     ->getStateUsing(fn ($record): ?string => Currency::find($record->currency)?->name ?? null)
+                    ->label('Moeda')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_price')
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('shipping_price')
-                    ->label('Shipping cost')
+                    ->label('Valor Total')
                     ->searchable()
                     ->sortable(),
             ])
             ->actions([
                 Tables\Actions\Action::make('open')
+                    ->label('Ver')
                     ->url(fn (Order $record): string => OrderResource::getUrl('edit', ['record' => $record])),
             ]);
     }

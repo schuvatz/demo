@@ -38,6 +38,7 @@ class CategoryResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nome')
                     ->required()
                     ->maxValue(50)
                     ->live(onBlur: true)
@@ -50,10 +51,11 @@ class CategoryResource extends Resource
                     ->unique(Category::class, 'slug', ignoreRecord: true),
 
                 Forms\Components\MarkdownEditor::make('description')
+                    ->label('Descrição')
                     ->columnSpan('full'),
 
                 Forms\Components\Toggle::make('is_visible')
-                    ->label('Visible to customers.')
+                    ->label('Visível para os clientes?')
                     ->default(true),
             ]);
     }
@@ -63,25 +65,26 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nome')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_visible')
-                    ->label('Visibility')
+                    ->label('Visibilidade')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Last Updated')
-                    ->date(),
+                    ->label('Atualizado em')
+                    ->date('d/m/Y'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()->iconButton(),
+                Tables\Actions\EditAction::make()->iconButton(),
+                Tables\Actions\DeleteAction::make()->iconButton(),
             ])
             ->groupedBulkActions([
                 Tables\Actions\DeleteBulkAction::make()
@@ -98,14 +101,15 @@ class CategoryResource extends Resource
     {
         return $infolist
             ->schema([
-                TextEntry::make('name'),
+                TextEntry::make('name')->label('Nome'),
                 TextEntry::make('slug'),
-                TextEntry::make('description'),
+                TextEntry::make('description')->label('Descrição'),
                 IconEntry::make('is_visible')
-                    ->label('Visibility')
+                    ->label('Visibilidade')
                     ->boolean(),
                 TextEntry::make('updated_at')
-                    ->dateTime(),
+                    ->label('Atualizado em')
+                    ->dateTime('d/m/Y H:i'),
             ])
             ->columns(1)
             ->inlineLabel();

@@ -17,6 +17,8 @@ class CommentsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    protected static ?string $title = 'Comentários';
+
     public function form(Form $form): Form
     {
         return $form
