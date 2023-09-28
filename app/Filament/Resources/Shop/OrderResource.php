@@ -48,7 +48,7 @@ class OrderResource extends Resource
                             ->schema(static::getFormSchema())
                             ->columns(2),
 
-                        Forms\Components\Section::make('Order items')
+                        Forms\Components\Section::make('Itens do Pedido')
                             ->schema(static::getFormSchema('items')),
                     ])
                     ->columnSpan(['lg' => fn (?Order $record) => $record === null ? 3 : 2]),
@@ -56,11 +56,11 @@ class OrderResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\Placeholder::make('created_at')
-                            ->label('Created at')
+                            ->label('Criado')
                             ->content(fn (Order $record): ?string => $record->created_at?->diffForHumans()),
 
                         Forms\Components\Placeholder::make('updated_at')
-                            ->label('Last modified at')
+                            ->label('Modificado')
                             ->content(fn (Order $record): ?string => $record->updated_at?->diffForHumans()),
                     ])
                     ->columnSpan(['lg' => 1])
@@ -74,13 +74,16 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('number')
+                    ->label('Número')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('customer.name')
+                    ->label('Cliente')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 Tables\Columns\BadgeColumn::make('status')
+                    ->label('Status')
                     ->colors([
                         'danger' => 'cancelled',
                         'warning' => 'processing',
@@ -88,10 +91,12 @@ class OrderResource extends Resource
                     ]),
                 Tables\Columns\TextColumn::make('currency')
                     ->getStateUsing(fn ($record): ?string => Currency::find($record->currency)?->name ?? null)
+                    ->label('Moeda')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('total_price')
+                    ->label('Preço Total')
                     ->searchable()
                     ->sortable()
                     ->summarize([
@@ -100,6 +105,7 @@ class OrderResource extends Resource
                     ]),
                 Tables\Columns\TextColumn::make('shipping_price')
                     ->label('Shipping cost')
+                    ->label('Valor do Frete')
                     ->searchable()
                     ->sortable()
                     ->toggleable()
@@ -108,8 +114,8 @@ class OrderResource extends Resource
                             ->money(),
                     ]),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Order Date')
-                    ->date()
+                    ->label('Data do Pedido')
+                    ->date('d/m/Y')
                     ->toggleable(),
             ])
             ->filters([
@@ -136,10 +142,10 @@ class OrderResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['created_from'] ?? null) {
-                            $indicators['created_from'] = 'Order from ' . Carbon::parse($data['created_from'])->toFormattedDateString();
+                            $indicators['created_from'] = 'Pedidos de ' . Carbon::parse($data['created_from'])->format('d/m/Y');
                         }
                         if ($data['created_until'] ?? null) {
-                            $indicators['created_until'] = 'Order until ' . Carbon::parse($data['created_until'])->toFormattedDateString();
+                            $indicators['created_until'] = 'Até ' . Carbon::parse($data['created_until'])->format('d/m/Y');
                         }
 
                         return $indicators;
@@ -159,7 +165,7 @@ class OrderResource extends Resource
             ])
             ->groups([
                 Tables\Grouping\Group::make('created_at')
-                    ->label('Order Date')
+                    ->label('Data do Pedido')
                     ->date()
                     ->collapsible(),
             ]);
@@ -225,7 +231,7 @@ class OrderResource extends Resource
                     ->relationship()
                     ->schema([
                         Forms\Components\Select::make('shop_product_id')
-                            ->label('Product')
+                            ->label('Produto')
                             ->options(Product::query()->pluck('name', 'id'))
                             ->required()
                             ->reactive()
@@ -236,7 +242,7 @@ class OrderResource extends Resource
                             ->searchable(),
 
                         Forms\Components\TextInput::make('qty')
-                            ->label('Quantity')
+                            ->label('Quantidade')
                             ->numeric()
                             ->default(1)
                             ->columnSpan([
@@ -245,7 +251,7 @@ class OrderResource extends Resource
                             ->required(),
 
                         Forms\Components\TextInput::make('unit_price')
-                            ->label('Unit Price')
+                            ->label('Preço Unidade')
                             ->disabled()
                             ->dehydrated()
                             ->numeric()
@@ -266,29 +272,34 @@ class OrderResource extends Resource
 
         return [
             Forms\Components\TextInput::make('number')
+                ->label('Número')
                 ->default('OR-' . random_int(100000, 999999))
                 ->disabled()
                 ->dehydrated()
                 ->required(),
 
             Forms\Components\Select::make('shop_customer_id')
+                ->label('Cliente')
                 ->relationship('customer', 'name')
                 ->searchable()
                 ->required()
                 ->createOptionForm([
                     Forms\Components\TextInput::make('name')
+                        ->label('Nome')
                         ->required(),
 
                     Forms\Components\TextInput::make('email')
-                        ->label('Email address')
+                        ->label('Email')
                         ->required()
                         ->email()
                         ->unique(),
 
-                    Forms\Components\TextInput::make('phone'),
+                    Forms\Components\TextInput::make('phone')
+                    ->label('Telefone'),
 
                     Forms\Components\Select::make('gender')
-                        ->placeholder('Select gender')
+                        ->label('Sexo')
+                        ->placeholder('Selecione o gênero')
                         ->options([
                             'male' => 'Male',
                             'female' => 'Female',
@@ -298,8 +309,8 @@ class OrderResource extends Resource
                 ])
                 ->createOptionAction(function (Forms\Components\Actions\Action $action) {
                     return $action
-                        ->modalHeading('Create customer')
-                        ->modalButton('Create customer')
+                        ->modalHeading('Criar Cliente')
+                        ->modalButton('Criar Cliente')
                         ->modalWidth('lg');
                 }),
 
@@ -315,6 +326,7 @@ class OrderResource extends Resource
                 ->native(false),
 
             Forms\Components\Select::make('currency')
+                ->label('Moeda')
                 ->searchable()
                 ->getSearchResultsUsing(fn (string $query) => Currency::where('name', 'like', "%{$query}%")->pluck('name', 'id'))
                 ->getOptionLabelUsing(fn ($value): ?string => Currency::find($value)?->getAttribute('name'))
@@ -324,6 +336,7 @@ class OrderResource extends Resource
                 ->columnSpan('full'),
 
             Forms\Components\MarkdownEditor::make('notes')
+                ->label('Anotações')
                 ->columnSpan('full'),
         ];
     }
