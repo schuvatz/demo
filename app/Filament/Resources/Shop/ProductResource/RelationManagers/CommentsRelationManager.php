@@ -49,7 +49,7 @@ class CommentsRelationManager extends RelationManager
                 TextEntry::make('title'),
                 TextEntry::make('customer.name'),
                 IconEntry::make('is_visible')
-                    ->label('Visibility')
+                    ->label('Visibilidade?')
                     ->boolean(),
                 TextEntry::make('content')
                     ->markdown(),

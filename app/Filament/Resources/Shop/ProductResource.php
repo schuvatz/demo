@@ -45,6 +45,7 @@ class ProductResource extends Resource
                         Forms\Components\Section::make()
                             ->schema([
                                 Forms\Components\TextInput::make('name')
+                                    ->label('Nome')
                                     ->required()
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
@@ -62,21 +63,22 @@ class ProductResource extends Resource
                                     ->unique(Product::class, 'slug', ignoreRecord: true),
 
                                 Forms\Components\MarkdownEditor::make('description')
+                                    ->label('Descrição')
                                     ->columnSpan('full'),
                             ])
                             ->columns(2),
 
                         Forms\Components\Section::make('Images')
+                            ->label('Imagens')
                             ->schema([
                                 SpatieMediaLibraryFileUpload::make('media')
                                     ->collection('product-images')
                                     ->multiple()
                                     ->maxFiles(5)
-                                    ->disableLabel(),
                             ])
                             ->collapsible(),
 
-                        Forms\Components\Section::make('Pricing')
+                        Forms\Components\Section::make('Preço')
                             ->schema([
                                 Forms\Components\TextInput::make('price')
                                     ->numeric()
@@ -84,20 +86,20 @@ class ProductResource extends Resource
                                     ->required(),
 
                                 Forms\Components\TextInput::make('old_price')
-                                    ->label('Compare at price')
+                                    ->label('Preço Anterior')
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
                                     ->required(),
 
                                 Forms\Components\TextInput::make('cost')
-                                    ->label('Cost per item')
-                                    ->helperText('Customers won\'t see this price.')
+                                    ->label('Custo por item')
+                                    ->helperText('Clientes não verão esse preço...')
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
                                     ->required(),
                             ])
                             ->columns(2),
-                        Forms\Components\Section::make('Inventory')
+                        Forms\Components\Section::make('Estoque')
                             ->schema([
                                 Forms\Components\TextInput::make('sku')
                                     ->label('SKU (Stock Keeping Unit)')
@@ -105,33 +107,36 @@ class ProductResource extends Resource
                                     ->required(),
 
                                 Forms\Components\TextInput::make('barcode')
-                                    ->label('Barcode (ISBN, UPC, GTIN, etc.)')
+                                    ->label('Código de Barras (ISBN, UPC, GTIN, etc.)')
                                     ->unique(Product::class, 'barcode', ignoreRecord: true)
                                     ->required(),
 
                                 Forms\Components\TextInput::make('qty')
-                                    ->label('Quantity')
+                                    ->label('Quantidade')
                                     ->numeric()
                                     ->rules(['integer', 'min:0'])
                                     ->required(),
 
                                 Forms\Components\TextInput::make('security_stock')
-                                    ->helperText('The safety stock is the limit stock for your products which alerts you if the product stock will soon be out of stock.')
+                                    ->label('Estoque Mínimo')
+                                    ->helperText('A quantidade mínima que esse produto deve ter sempre em estoque...')
                                     ->numeric()
                                     ->rules(['integer', 'min:0'])
                                     ->required(),
                             ])
                             ->columns(2),
 
-                        Forms\Components\Section::make('Shipping')
+                        Forms\Components\Section::make('Entrega')
                             ->schema([
                                 Forms\Components\Checkbox::make('backorder')
-                                    ->label('This product can be returned'),
+                                    ->label('PAC'),
 
                                 Forms\Components\Checkbox::make('requires_shipping')
-                                    ->label('This product will be shipped'),
+                                    ->label('SEDEX'),
+                                Forms\Components\Checkbox::make('requires_shipping')
+                                    ->label('Transportadora'),
                             ])
-                            ->columns(2),
+                            ->columns(3),
                     ])
                     ->columnSpan(['lg' => 2]),
 
@@ -140,24 +145,25 @@ class ProductResource extends Resource
                         Forms\Components\Section::make('Status')
                             ->schema([
                                 Forms\Components\Toggle::make('is_visible')
-                                    ->label('Visible')
-                                    ->helperText('This product will be hidden from all sales channels.')
+                                    ->label('Publicado?')
                                     ->default(true),
 
                                 Forms\Components\DatePicker::make('published_at')
-                                    ->label('Availability')
+                                    ->label('Disponibilidade')
                                     ->default(now())
                                     ->required(),
                             ]),
 
-                        Forms\Components\Section::make('Associations')
+                        Forms\Components\Section::make('Relações')
                             ->schema([
                                 Forms\Components\Select::make('shop_brand_id')
                                     ->relationship('brand', 'name')
+                                    ->label('Marca')
                                     ->searchable()
                                     ->hiddenOn(ProductsRelationManager::class),
 
                                 Forms\Components\Select::make('categories')
+                                    ->label('Categorias')
                                     ->relationship('categories', 'name')
                                     ->multiple()
                                     ->required(),
@@ -173,27 +179,28 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
-                    ->label('Image')
+                    ->label('Imagem')
                     ->collection('product-images'),
 
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Name')
+                    ->label('Nome')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('brand.name')
+                    ->label('Marca')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
 
                 Tables\Columns\IconColumn::make('is_visible')
-                    ->label('Visibility')
+                    ->label('Ativo?')
                     ->boolean()
                     ->sortable()
                     ->toggleable(),
 
                 Tables\Columns\TextColumn::make('price')
-                    ->label('Price')
+                    ->label('Preço')
                     ->searchable()
                     ->sortable(),
 
@@ -204,20 +211,21 @@ class ProductResource extends Resource
                     ->toggleable(),
 
                 Tables\Columns\TextColumn::make('qty')
-                    ->label('Quantity')
+                    ->label('Quantidade')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
 
                 Tables\Columns\TextColumn::make('security_stock')
+                    ->label('Estoque Mínimo')
                     ->searchable()
                     ->sortable()
                     ->toggleable()
                     ->toggledHiddenByDefault(),
 
                 Tables\Columns\TextColumn::make('published_at')
-                    ->label('Publish Date')
-                    ->date()
+                    ->label('Data de Publicação')
+                    ->date('d/m/Y')
                     ->sortable()
                     ->toggleable()
                     ->toggledHiddenByDefault(),

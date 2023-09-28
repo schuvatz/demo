@@ -23,7 +23,7 @@ class ProductStats extends BaseWidget
         return [
             Stat::make('Total de Produtos', $this->getPageTableQuery()->count()),
             Stat::make('Estoque Total', $this->getPageTableQuery()->sum('qty')),
-            Stat::make('Preço Médio', number_format($this->getPageTableQuery()->avg('price'), 2)),
+            Stat::make('Preço Médio', "R$ " . number_format($this->getPageTableQuery()->avg('price'), 2, ",", ".")),
         ];
     }
 }
