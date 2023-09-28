@@ -45,12 +45,15 @@ class CommentsRelationManager extends RelationManager
         return $infolist
             ->columns(1)
             ->schema([
-                TextEntry::make('title'),
-                TextEntry::make('customer.name'),
+                TextEntry::make('title')
+                ->label('Título'),
+                TextEntry::make('customer.name')
+                ->label('Cliente'),
                 IconEntry::make('is_visible')
-                    ->label('Visibility')
+                    ->label('Visibilidade')
                     ->boolean(),
                 TextEntry::make('content')
+                    ->label('Conteúdo')
                     ->markdown(),
             ]);
     }
@@ -60,17 +63,17 @@ class CommentsRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label('Title')
+                    ->label('Título')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('customer.name')
-                    ->label('Customer')
+                    ->label('Cliente')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_visible')
-                    ->label('Visibility')
+                    ->label('Visibilidade')
                     ->boolean()
                     ->sortable(),
             ])

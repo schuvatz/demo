@@ -14,6 +14,10 @@ class ProductsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    protected static ?string $modelLabel = 'Produto';
+
+    protected static ?string $pluralModelLabel = 'Produtos';
+
     public function form(Form $form): Form
     {
         return ProductResource::form($form);
